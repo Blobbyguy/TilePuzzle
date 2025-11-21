@@ -26,7 +26,9 @@ class Piece {
     Color? color,
   }) : color = color ?? _getRandomColor();
 
-  /// Gets a random color for the piece if none is specified.
+  static int colorCounter = 0;
+
+  /// Gets a color for the piece based on its ID if none is specified.
   static Color _getRandomColor() {
     final List<Color> colors = [
       Colors.red,
@@ -38,7 +40,8 @@ class Piece {
       Colors.teal,
       Colors.pink,
     ];
-    return colors[DateTime.now().millisecondsSinceEpoch % colors.length];
+    // Use a static counter to ensure consistent colors
+    return colors[colorCounter++ % colors.length];
   }
 
   /// Creates a copy of this piece.

@@ -17,8 +17,8 @@ class PuzzleSolverScreen extends StatefulWidget {
 
 class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
   // Board configuration
-  int _boardWidth = 8;
-  int _boardHeight = 8;
+  int _boardWidth = 11;
+  int _boardHeight = 5;
   Board? _board;
 
   // Pieces
@@ -86,6 +86,14 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
     _handlePieceAdded(p2);
     _handlePieceAdded(p3);
     _handlePieceAdded(p4);
+    _handlePieceAdded(p5);
+    _handlePieceAdded(p6);
+    _handlePieceAdded(p7);
+    _handlePieceAdded(p8);
+    _handlePieceAdded(p9);
+    _handlePieceAdded(p10);
+    _handlePieceAdded(p11);
+    _handlePieceAdded(p12);
   }
 
   /// Adds a piece template to the available pieces.
@@ -220,8 +228,14 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
 
   /// Handles when the solver reports an attempt.
   void _handleAttempt(Attempt attempt) {
-    // Calculate delay based on solver speed
-    int delayMs = (1000 * (1 - _solverSpeed)).toInt();
+    // Calculate delay based on solver speed, but cap it to a reasonable maximum
+    // to prevent the solver from being too slow at low speed settings
+    int delayMs = (500 * (1 - _solverSpeed)).toInt();
+
+    // For very fast speeds (>0.8), use minimal delay to maximize performance
+    if (_solverSpeed > 0.8) {
+      delayMs = 0;
+    }
 
     // Delay to visualize the attempt
     Future.delayed(Duration(milliseconds: delayMs), () {
@@ -284,10 +298,6 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          PieceTemplates(
-                            onTemplateSelected: _addPieceTemplate,
-                          ),
-                          const Divider(),
                           Expanded(
                             child: PieceSelector(
                               availablePieces: _availablePieces,
@@ -297,6 +307,10 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
                               getPieceCount: getPieceCount,
                               selectedPiece: _selectedPiece,
                             ),
+                          ),
+                          const Divider(),
+                          PieceTemplates(
+                            onTemplateSelected: _addPieceTemplate,
                           ),
                         ],
                       ),

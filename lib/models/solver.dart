@@ -45,6 +45,12 @@ class Solver {
   /// The number of backtracks performed
   int _backtracks = 0;
 
+  /// Counter for limiting UI yields
+  int _yieldCounter = 0;
+
+  /// How often to yield to the UI thread (every N backtracks)
+  final int _yieldFrequency = 50;
+
   /// The start time of the solving process
   DateTime? _startTime;
 
@@ -167,8 +173,12 @@ class Solver {
             board.removePiece(piece.getRotatedCells(), x, y);
             currentAttempt.removeLastPlacedPiece();
 
-            // Yield to allow UI updates
-            await Future.delayed(Duration.zero);
+            // Yield to allow UI updates, but only every _yieldFrequency backtracks
+            _yieldCounter++;
+            if (_yieldCounter >= _yieldFrequency) {
+              _yieldCounter = 0;
+              await Future.delayed(Duration.zero);
+            }
           }
         }
       }

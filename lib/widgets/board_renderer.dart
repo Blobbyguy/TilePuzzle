@@ -7,19 +7,19 @@ import '../models/attempt.dart';
 class BoardRenderer extends StatelessWidget {
   /// The board to render
   final Board board;
-  
+
   /// The current attempt to display
   final Attempt? attempt;
-  
+
   /// Map of piece IDs to their corresponding piece objects
   final Map<String, Piece> piecesMap;
-  
+
   /// The size of each cell in logical pixels
   final double cellSize;
-  
+
   /// Whether to highlight the active placement
   final bool highlightActive;
-  
+
   /// The index of the active piece to highlight
   final int? activePieceIndex;
 
@@ -110,31 +110,31 @@ class _BoardPainter extends CustomPainter {
     for (int i = 0; i < attempt!.placedPieces.length; i++) {
       PlacedPiece placedPiece = attempt!.placedPieces[i];
       Piece? piece = piecesMap[placedPiece.pieceId];
-      
+
       if (piece == null) continue;
-      
+
       // Create a copy of the piece with the correct rotation
       Piece rotatedPiece = piece.copy();
       rotatedPiece.rotation = placedPiece.rotation;
-      
+
       // Get the cells of the rotated piece
       List<List<int>> cells = rotatedPiece.getRotatedCells();
-      
+
       // Determine if this is the active piece to highlight
       bool isActive = highlightActive && activePieceIndex == i;
-      
+
       // Draw each cell of the piece
       for (List<int> cell in cells) {
         int x = placedPiece.position[0] + cell[0];
         int y = placedPiece.position[1] + cell[1];
-        
+
         // Draw the cell
         final Paint cellPaint = Paint()
           ..color = isActive 
               ? piece.color.withOpacity(0.8) 
               : piece.color.withOpacity(0.6)
           ..style = PaintingStyle.fill;
-        
+
         canvas.drawRect(
           Rect.fromLTWH(
             x * cellSize,
@@ -144,13 +144,13 @@ class _BoardPainter extends CustomPainter {
           ),
           cellPaint,
         );
-        
+
         // Draw cell border
         final Paint borderPaint = Paint()
           ..color = isActive ? Colors.white : Colors.black.withOpacity(0.3)
           ..style = PaintingStyle.stroke
           ..strokeWidth = isActive ? 2.0 : 1.0;
-        
+
         canvas.drawRect(
           Rect.fromLTWH(
             x * cellSize,
@@ -160,7 +160,7 @@ class _BoardPainter extends CustomPainter {
           ),
           borderPaint,
         );
-        
+
         // Draw piece ID in the first cell
         if (cell[0] == cells.first[0] && cell[1] == cells.first[1]) {
           TextPainter textPainter = TextPainter(
@@ -174,9 +174,9 @@ class _BoardPainter extends CustomPainter {
             ),
             textDirection: TextDirection.ltr,
           );
-          
+
           textPainter.layout(minWidth: 0, maxWidth: cellSize);
-          
+
           textPainter.paint(
             canvas,
             Offset(
@@ -190,7 +190,10 @@ class _BoardPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // Always repaint for simplicity
+  bool shouldRepaint(covariant _BoardPainter oldDelegate) {
+    // Only repaint if something has changed
+    return board != oldDelegate.board ||
+           attempt?.attemptId != oldDelegate.attempt?.attemptId ||
+           activePieceIndex != oldDelegate.activePieceIndex;
   }
 }
