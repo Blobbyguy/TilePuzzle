@@ -5,18 +5,21 @@ import '../models/piece.dart';
 class PieceSelector extends StatelessWidget {
   /// The list of available pieces
   final List<Piece> availablePieces;
-  
+
   /// Callback for when a piece is selected
   final Function(Piece) onPieceSelected;
-  
+
   /// Callback for when a piece is added to the puzzle
   final Function(Piece) onPieceAdded;
-  
+
   /// Callback for when a piece is removed from the puzzle
   final Function(Piece) onPieceRemoved;
-  
+
   /// The currently selected piece
   final Piece? selectedPiece;
+
+  /// Function to get the count of a piece
+  final Function(String) getPieceCount;
 
   /// Creates a new piece selector with the specified properties.
   const PieceSelector({
@@ -25,6 +28,7 @@ class PieceSelector extends StatelessWidget {
     required this.onPieceSelected,
     required this.onPieceAdded,
     required this.onPieceRemoved,
+    required this.getPieceCount,
     this.selectedPiece,
   }) : super(key: key);
 
@@ -49,7 +53,7 @@ class PieceSelector extends StatelessWidget {
             itemBuilder: (context, index) {
               final piece = availablePieces[index];
               final isSelected = selectedPiece?.id == piece.id;
-              
+
               return Card(
                 elevation: isSelected ? 4 : 1,
                 color: isSelected ? Colors.blue.shade100 : null,
@@ -63,19 +67,32 @@ class PieceSelector extends StatelessWidget {
                     ),
                   ),
                   title: Text('Piece ${piece.id}'),
-                  subtitle: Text('Size: ${piece.size} cells${piece.rotatable ? ', Rotatable' : ''}'),
+                  subtitle: Text('Size: ${piece.size} cells${piece.rotatable ? ', Rotatable' : ''} - Count: ${getPieceCount(piece.id)}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
+                        icon: const Icon(Icons.remove_circle),
+                        onPressed: getPieceCount(piece.id) > 0 
+                            ? () => onPieceRemoved(piece)
+                            : null,
+                        tooltip: 'Remove from puzzle',
+                      ),
+                      Container(
+                        width: 30,
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${getPieceCount(piece.id)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.add_circle),
                         onPressed: () => onPieceAdded(piece),
                         tooltip: 'Add to puzzle',
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle),
-                        onPressed: () => onPieceRemoved(piece),
-                        tooltip: 'Remove from puzzle',
                       ),
                     ],
                   ),
@@ -181,28 +198,63 @@ class PieceTemplates extends StatelessWidget {
           children: [
             _buildTemplateCard(
               context,
-              Piece.createLine(id: 'Line4', length: 4),
-              'Line (4)',
+              Piece.createSquare(id: 'P1'),
+              'P1: Square',
             ),
             _buildTemplateCard(
               context,
-              Piece.createLine(id: 'Line3', length: 3),
-              'Line (3)',
+              Piece.createLine4(id: 'P2'),
+              'P2: Line',
             ),
             _buildTemplateCard(
               context,
-              Piece.createLShape(id: 'L1'),
-              'L-Shape',
+              Piece.createP3(id: 'P3'),
+              'P3: L-like',
             ),
             _buildTemplateCard(
               context,
-              Piece.createBlock(id: 'Block1'),
-              '2×2 Block',
+              Piece.createP4(id: 'P4'),
+              'P4: Z-shape',
             ),
             _buildTemplateCard(
               context,
-              Piece.createTShape(id: 'T1'),
-              'T-Shape',
+              Piece.createP5(id: 'P5'),
+              'P5: Small L',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP6(id: 'P6'),
+              'P6: Cross',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP7(id: 'P7'),
+              'P7: Stair',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP8(id: 'P8'),
+              'P8: Rev L+Line',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP9(id: 'P9'),
+              'P9: T-shape',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP10(id: 'P10'),
+              'P10: Long L',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP11(id: 'P11'),
+              'P11: Small L',
+            ),
+            _buildTemplateCard(
+              context,
+              Piece.createP12(id: 'P12'),
+              'P12: T+Block',
             ),
           ],
         ),
@@ -253,37 +305,37 @@ class _PiecePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Get the cells of the piece with rotation applied
     List<List<int>> cells = piece.getRotatedCells();
-    
+
     // Calculate the bounding box
     List<int> boundingBox = piece.getBoundingBox();
     int minX = boundingBox[0];
     int minY = boundingBox[1];
     int maxX = boundingBox[2];
     int maxY = boundingBox[3];
-    
+
     // Calculate the width and height of the piece
     int width = maxX - minX + 1;
     int height = maxY - minY + 1;
-    
+
     // Calculate the scale to fit the piece in the available space
     double scaleX = size.width / (width * cellSize);
     double scaleY = size.height / (height * cellSize);
     double scale = scaleX < scaleY ? scaleX : scaleY;
-    
+
     // Calculate the offset to center the piece
     double offsetX = (size.width - width * cellSize * scale) / 2;
     double offsetY = (size.height - height * cellSize * scale) / 2;
-    
+
     // Draw each cell of the piece
     for (List<int> cell in cells) {
       int x = cell[0] - minX;
       int y = cell[1] - minY;
-      
+
       // Draw the cell
       final Paint cellPaint = Paint()
         ..color = piece.color.withOpacity(0.8)
         ..style = PaintingStyle.fill;
-      
+
       canvas.drawRect(
         Rect.fromLTWH(
           offsetX + x * cellSize * scale,
@@ -293,13 +345,13 @@ class _PiecePainter extends CustomPainter {
         ),
         cellPaint,
       );
-      
+
       // Draw cell border
       final Paint borderPaint = Paint()
         ..color = Colors.black.withOpacity(0.5)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
-      
+
       canvas.drawRect(
         Rect.fromLTWH(
           offsetX + x * cellSize * scale,

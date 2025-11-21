@@ -160,4 +160,147 @@ class Piece {
     ];
     return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
   }
+
+  /// Creates a Square (2×2 block) piece (P1).
+  static Piece createSquare({required String id, Color? color}) {
+    // [ [1, 1],
+    //   [1, 1] ]
+    List<List<int>> cells = [
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, 1],
+    ];
+    return Piece(id: id, cells: cells, rotatable: false, color: color);
+  }
+
+  /// Creates a Line (1×4) piece (P2).
+  static Piece createLine4({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1, 1, 1] ]
+    List<List<int>> cells = [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P3 (L-like shape) piece.
+  static Piece createP3({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1, 1],
+    //   [1, 0, 0],
+    //   [1, 0, 0] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0], [2, 0],  // Top row
+      [0, 1],                  // Middle row
+      [0, 2],                  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P4 (Z / skewed shape) piece.
+  static Piece createP4({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1, 0],
+    //   [0, 1, 1],
+    //   [0, 0, 1] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0],          // Top row
+      [1, 1], [2, 1],          // Middle row
+      [2, 2],                  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P5 (small L) piece.
+  static Piece createP5({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1],
+    //   [0, 1] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0],          // Top row
+      [1, 1],                  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P6 (cross / plus shape) piece.
+  static Piece createP6({required String id, bool rotatable = true, Color? color}) {
+    // [ [0, 1, 0],
+    //   [1, 1, 1],
+    //   [0, 1, 0] ]
+    List<List<int>> cells = [
+      [1, 0],                  // Top row
+      [0, 1], [1, 1], [2, 1],  // Middle row
+      [1, 2],                  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P7 (stair-like shape) piece.
+  static Piece createP7({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1],
+    //   [1, 0],
+    //   [1, 1] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0],          // Top row
+      [0, 1],                  // Middle row
+      [0, 2], [1, 2],          // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P8 (reverse L + line) piece.
+  static Piece createP8({required String id, bool rotatable = true, Color? color}) {
+    // [ [0, 1, 1, 1],
+    //   [1, 1, 0, 0] ]
+    List<List<int>> cells = [
+      [1, 0], [2, 0], [3, 0],  // Top row
+      [0, 1], [1, 1],          // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P9 (T-shape) piece.
+  static Piece createP9({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1, 0],
+    //   [1, 1, 1] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0],          // Top row
+      [0, 1], [1, 1], [2, 1],  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P10 (long L) piece.
+  static Piece createP10({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 0, 0, 0],
+    //   [1, 1, 1, 1] ]
+    List<List<int>> cells = [
+      [0, 0],                  // Top row
+      [0, 1], [1, 1], [2, 1], [3, 1],  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P11 (small L) piece.
+  static Piece createP11({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 0, 0],
+    //   [1, 1, 1] ]
+    List<List<int>> cells = [
+      [0, 0],                  // Top row
+      [0, 1], [1, 1], [2, 1],  // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
+
+  /// Creates a P12 (T with extra block) piece.
+  static Piece createP12({required String id, bool rotatable = true, Color? color}) {
+    // [ [1, 1, 1, 1],
+    //   [0, 1, 0, 0] ]
+    List<List<int>> cells = [
+      [0, 0], [1, 0], [2, 0], [3, 0],  // Top row
+      [1, 1],                          // Bottom row
+    ];
+    return Piece(id: id, cells: cells, rotatable: rotatable, color: color);
+  }
 }

@@ -26,6 +26,7 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
   final List<Piece> _selectedPieces = [];
   Piece? _selectedPiece;
   final Map<String, Piece> _piecesMap = {};
+  final Map<String, int> _pieceCounts = {};
 
   // Solver
   Solver? _solver;
@@ -52,11 +53,39 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
 
   /// Initializes the default pieces.
   void _initializeDefaultPieces() {
-    // Add some default pieces
-    _addPieceTemplate(Piece.createLine(id: 'Line4', length: 4));
-    _addPieceTemplate(Piece.createLShape(id: 'L1'));
-    _addPieceTemplate(Piece.createBlock(id: 'Block1'));
-    _addPieceTemplate(Piece.createTShape(id: 'T1'));
+    // Create all 12 puzzle pieces
+    Piece p1 = Piece.createSquare(id: 'P1');
+    Piece p2 = Piece.createLine4(id: 'P2');
+    Piece p3 = Piece.createP3(id: 'P3');
+    Piece p4 = Piece.createP4(id: 'P4');
+    Piece p5 = Piece.createP5(id: 'P5');
+    Piece p6 = Piece.createP6(id: 'P6');
+    Piece p7 = Piece.createP7(id: 'P7');
+    Piece p8 = Piece.createP8(id: 'P8');
+    Piece p9 = Piece.createP9(id: 'P9');
+    Piece p10 = Piece.createP10(id: 'P10');
+    Piece p11 = Piece.createP11(id: 'P11');
+    Piece p12 = Piece.createP12(id: 'P12');
+
+    // Add piece templates
+    _addPieceTemplate(p1);
+    _addPieceTemplate(p2);
+    _addPieceTemplate(p3);
+    _addPieceTemplate(p4);
+    _addPieceTemplate(p5);
+    _addPieceTemplate(p6);
+    _addPieceTemplate(p7);
+    _addPieceTemplate(p8);
+    _addPieceTemplate(p9);
+    _addPieceTemplate(p10);
+    _addPieceTemplate(p11);
+    _addPieceTemplate(p12);
+
+    // Add one of each piece to selected pieces by default
+    _handlePieceAdded(p1);
+    _handlePieceAdded(p2);
+    _handlePieceAdded(p3);
+    _handlePieceAdded(p4);
   }
 
   /// Adds a piece template to the available pieces.
@@ -91,17 +120,34 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
   /// Handles when a piece is added to the puzzle.
   void _handlePieceAdded(Piece piece) {
     setState(() {
-      if (!_selectedPieces.contains(piece)) {
-        _selectedPieces.add(piece);
-      }
+      // Add piece to selected pieces
+      _selectedPieces.add(piece);
+
+      // Update piece count
+      _pieceCounts[piece.id] = (_pieceCounts[piece.id] ?? 0) + 1;
     });
   }
 
   /// Handles when a piece is removed from the puzzle.
   void _handlePieceRemoved(Piece piece) {
     setState(() {
-      _selectedPieces.remove(piece);
+      // Only remove if there are pieces of this type
+      if (_pieceCounts[piece.id] != null && _pieceCounts[piece.id]! > 0) {
+        // Find the index of the piece to remove
+        int indexToRemove = _selectedPieces.indexWhere((p) => p.id == piece.id);
+        if (indexToRemove != -1) {
+          _selectedPieces.removeAt(indexToRemove);
+
+          // Update piece count
+          _pieceCounts[piece.id] = _pieceCounts[piece.id]! - 1;
+        }
+      }
     });
+  }
+
+  /// Gets the count of a specific piece.
+  int getPieceCount(String pieceId) {
+    return _pieceCounts[pieceId] ?? 0;
   }
 
   /// Handles when the board size is changed.
@@ -248,6 +294,7 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
                               onPieceSelected: _handlePieceSelected,
                               onPieceAdded: _handlePieceAdded,
                               onPieceRemoved: _handlePieceRemoved,
+                              getPieceCount: getPieceCount,
                               selectedPiece: _selectedPiece,
                             ),
                           ),
