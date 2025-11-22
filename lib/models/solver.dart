@@ -137,7 +137,6 @@ class Solver {
       return false;
     }
 
-
     // Get the current piece
     Piece piece = pieces[pieceIndex];
 
