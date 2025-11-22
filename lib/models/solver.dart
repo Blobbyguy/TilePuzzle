@@ -125,6 +125,19 @@ class Solver {
       return true;
     }
 
+    // Find the smallest hole on the board and the smallest piece size
+    var smallestHole = board.smallestHole();
+    var smallestRemainingPiece = pieces
+        .where((p) => !currentAttempt.placedPieces.map((placed) => placed.pieceId).contains(p.id))
+        .map((p) => p.size)
+        .reduce((a, b) => a < b ? a : b);
+
+    // Exit early if the smallest hole is larger than the smallest piece
+    if (smallestHole < smallestRemainingPiece) {
+      return false;
+    }
+
+
     // Get the current piece
     Piece piece = pieces[pieceIndex];
 

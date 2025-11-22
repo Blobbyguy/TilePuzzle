@@ -89,4 +89,67 @@ class Board {
     }
     return buffer.toString();
   }
+
+  /// Returns the smallest hole in the board state in the top, left, right, and down directions only (not looking at diagonals).
+  int smallestHole() {
+    // Set to track visited cells
+    final visited = Set<String>();
+    int smallest = width * height; // Start with the largest possible size
+
+    // Flood-fill function to calculate the size of a hole
+    int calculateHoleSize(int startX, int startY) {
+      final directions = [
+        [0, 1],  // Down
+        [1, 0],  // Right
+        [0, -1], // Up
+        [-1, 0], // Left
+      ];
+
+      final queue = <List<int>>[[startX, startY]];
+      int size = 0;
+
+      while (queue.isNotEmpty) {
+        final cell = queue.removeAt(0);
+        int x = cell[0];
+        int y = cell[1];
+
+        // Skip if already visited
+        if (!visited.add('$x $y')) continue;
+
+        size++;
+
+        // Explore neighbors
+        for (var dir in directions) {
+          int newX = x + dir[0];
+          int newY = y + dir[1];
+
+          // Check bounds and emptiness
+          if (newX >= 0 &&
+              newX < width &&
+              newY >= 0 &&
+              newY < height &&
+              grid[newY][newX] == null &&
+              !visited.contains('$newX $newY')) {
+            queue.add([newX, newY]);
+          }
+        }
+      }
+
+      return size;
+    }
+
+    // Scan all cells in the board to find holes
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (grid[y][x] == null && !visited.contains('$x $y')) {
+          int holeSize = calculateHoleSize(x, y);
+          if (holeSize < smallest) {
+            smallest = holeSize;
+          }
+        }
+      }
+    }
+
+    return smallest;
+  }
 }
