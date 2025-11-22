@@ -53,70 +53,66 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
 
   /// Initializes the default pieces.
   void _initializeDefaultPieces() {
-    // Create all 12 puzzle pieces
-    Piece p1 = Piece.createSquare(id: 'P1');
-    Piece p2 = Piece.createLine4(id: 'P2');
-    Piece p3 = Piece.createP3(id: 'P3');
-    Piece p4 = Piece.createP4(id: 'P4');
-    Piece p5 = Piece.createP5(id: 'P5');
-    Piece p6 = Piece.createP6(id: 'P6');
-    Piece p7 = Piece.createP7(id: 'P7');
-    Piece p8 = Piece.createP8(id: 'P8');
-    Piece p9 = Piece.createP9(id: 'P9');
-    Piece p10 = Piece.createP10(id: 'P10');
-    Piece p11 = Piece.createP11(id: 'P11');
-    Piece p12 = Piece.createP12(id: 'P12');
+    // Create all 12 puzzle pieces and add them directly to available pieces
+    setState(() {
+      // Create pieces with consistent colors
+      Piece p1 = Piece.createSquare(id: 'P1');
+      Piece p2 = Piece.createLine4(id: 'P2');
+      Piece p3 = Piece.createP3(id: 'P3');
+      Piece p4 = Piece.createP4(id: 'P4');
+      Piece p5 = Piece.createP5(id: 'P5');
+      Piece p6 = Piece.createP6(id: 'P6');
+      Piece p7 = Piece.createP7(id: 'P7');
+      Piece p8 = Piece.createP8(id: 'P8');
+      Piece p9 = Piece.createP9(id: 'P9');
+      Piece p10 = Piece.createP10(id: 'P10');
+      Piece p11 = Piece.createP11(id: 'P11');
+      Piece p12 = Piece.createP12(id: 'P12');
 
-    // Add piece templates
-    _addPieceTemplate(p1);
-    _addPieceTemplate(p2);
-    _addPieceTemplate(p3);
-    _addPieceTemplate(p4);
-    _addPieceTemplate(p5);
-    _addPieceTemplate(p6);
-    _addPieceTemplate(p7);
-    _addPieceTemplate(p8);
-    _addPieceTemplate(p9);
-    _addPieceTemplate(p10);
-    _addPieceTemplate(p11);
-    _addPieceTemplate(p12);
+      // Add pieces to available pieces list
+      _availablePieces.add(p1);
+      _availablePieces.add(p2);
+      _availablePieces.add(p3);
+      _availablePieces.add(p4);
+      _availablePieces.add(p5);
+      _availablePieces.add(p6);
+      _availablePieces.add(p7);
+      _availablePieces.add(p8);
+      _availablePieces.add(p9);
+      _availablePieces.add(p10);
+      _availablePieces.add(p11);
+      _availablePieces.add(p12);
+
+      // Add pieces to the map for reference
+      _piecesMap[p1.id] = p1;
+      _piecesMap[p2.id] = p2;
+      _piecesMap[p3.id] = p3;
+      _piecesMap[p4.id] = p4;
+      _piecesMap[p5.id] = p5;
+      _piecesMap[p6.id] = p6;
+      _piecesMap[p7.id] = p7;
+      _piecesMap[p8.id] = p8;
+      _piecesMap[p9.id] = p9;
+      _piecesMap[p10.id] = p10;
+      _piecesMap[p11.id] = p11;
+      _piecesMap[p12.id] = p12;
+    });
 
     // Add one of each piece to selected pieces by default
-    _handlePieceAdded(p1);
-    _handlePieceAdded(p2);
-    _handlePieceAdded(p3);
-    _handlePieceAdded(p4);
-    _handlePieceAdded(p5);
-    _handlePieceAdded(p6);
-    _handlePieceAdded(p7);
-    _handlePieceAdded(p8);
-    _handlePieceAdded(p9);
-    _handlePieceAdded(p10);
-    _handlePieceAdded(p11);
-    _handlePieceAdded(p12);
+    _handlePieceAdded(_availablePieces[0]);  // P1
+    _handlePieceAdded(_availablePieces[1]);  // P2
+    _handlePieceAdded(_availablePieces[2]);  // P3
+    _handlePieceAdded(_availablePieces[3]);  // P4
+    _handlePieceAdded(_availablePieces[4]);  // P5
+    _handlePieceAdded(_availablePieces[5]);  // P6
+    _handlePieceAdded(_availablePieces[6]);  // P7
+    _handlePieceAdded(_availablePieces[7]);  // P8
+    _handlePieceAdded(_availablePieces[8]);  // P9
+    _handlePieceAdded(_availablePieces[9]);  // P10
+    _handlePieceAdded(_availablePieces[10]); // P11
+    _handlePieceAdded(_availablePieces[11]); // P12
   }
 
-  /// Adds a piece template to the available pieces.
-  void _addPieceTemplate(Piece piece) {
-    setState(() {
-      // Create a new piece with a unique ID
-      String id = piece.id;
-      int counter = 1;
-      while (_piecesMap.containsKey(id)) {
-        id = '${piece.id}${counter++}';
-      }
-
-      Piece newPiece = Piece(
-        id: id,
-        cells: List<List<int>>.from(piece.cells.map((cell) => List<int>.from(cell))),
-        rotatable: piece.rotatable,
-        color: piece.color,
-      );
-
-      _availablePieces.add(newPiece);
-      _piecesMap[newPiece.id] = newPiece;
-    });
-  }
 
   /// Handles when a piece is selected.
   void _handlePieceSelected(Piece piece) {
@@ -307,10 +303,6 @@ class _PuzzleSolverScreenState extends State<PuzzleSolverScreen> {
                               getPieceCount: getPieceCount,
                               selectedPiece: _selectedPiece,
                             ),
-                          ),
-                          const Divider(),
-                          PieceTemplates(
-                            onTemplateSelected: _addPieceTemplate,
                           ),
                         ],
                       ),

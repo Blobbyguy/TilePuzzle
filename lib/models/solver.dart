@@ -145,6 +145,7 @@ class Solver {
               position: [x, y],
               rotation: piece.rotation,
             );
+
             currentAttempt.addPlacedPiece(placedPiece);
 
             // Report the attempt
